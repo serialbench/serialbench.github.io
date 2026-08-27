@@ -36,6 +36,12 @@ jobs:
 
       - run: npm ci
       - run: npm test
+
+      # Generate sample data as a development fallback when no real
+      # benchmark data exists in the data repo yet
+      - name: Generate sample data (fallback)
+        run: npm run generate:sample-data
+
       - run: npm run build
 
       - uses: actions/configure-pages@v4
