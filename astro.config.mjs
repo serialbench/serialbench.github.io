@@ -4,7 +4,6 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   site: 'https://serialbench.github.io',
-  base: '/serialbench/',
   integrations: [vue()],
   vite: {
     plugins: [tailwindcss()],
