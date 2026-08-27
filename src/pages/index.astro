@@ -3,10 +3,10 @@ import Layout from '../layouts/Layout.astro';
 import DashboardConsole from '../components/DashboardConsole.vue';
 import AvailabilityMatrix from '../components/AvailabilityMatrix.astro';
 import FeaturesTable from '../components/FeaturesTable.astro';
-import payloadData from '../data/sample.json';
-import type { Payload } from '../lib/dashboard';
+import { loadBenchmarks } from '../lib/data/loader';
 
-const payload = payloadData as unknown as Payload;
+const store = loadBenchmarks();
+const payload = store.latest;
 const envCount = Object.keys(payload.environments).length;
 const runDate = payload.metadata.generated_at.slice(0, 10);
 ---

@@ -1,7 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import payloadData from '../../data/sample.json';
-import type { Payload } from '../../lib/dashboard';
+import { loadBenchmarks } from '../../lib/data/loader';
 import {
   availability,
   environmentLabel,
@@ -17,14 +16,16 @@ import { channelColor } from '../../lib/channels';
 import { BASE } from '../../config';
 
 export function getStaticPaths() {
-  const payload = payloadData as unknown as Payload;
+  const store = loadBenchmarks();
+const payload = store.latest;
   return availability(payload).serializers.map((serializer) => ({
     params: { slug: serializer },
   }));
 }
 
 const { slug } = Astro.params;
-const payload = payloadData as unknown as Payload;
+const store = loadBenchmarks();
+const payload = store.latest;
 const serializer = slug as string;
 
 const { envKeys, cells } = availability(payload);

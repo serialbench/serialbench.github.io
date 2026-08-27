@@ -7,12 +7,14 @@ import type { ParsedRun, BenchmarkStore, DashboardPayload, VersionSpan, TrendPoi
 // The single entry point: loads all YAML run files from the data
 // directory (cloned by CI) and returns a fully-populated store.
 //
-// In development, falls back to the generated sample data if the
-// data/ directory doesn't exist (CI provides it at build time).
+// Falls back to the legacy sample.json if the data/ directory doesn't
+// exist (development without a data clone).
 
 export function loadBenchmarks(): BenchmarkStore {
-  const runs = loadRuns();
-  const latest = buildDashboardPayload(runs);
+  const runs = loadRunsFromData();
+  const fallback = runs.length === 0 ? loadFallbackPayload() : null;
+
+  const latest = runs.length > 0 ? buildDashboardPayload(runs) : (fallback as DashboardPayload);
 
   const versions = new Map<string, Set<string>>();
   const environments = new Map<string, Environment>();
@@ -32,6 +34,12 @@ export function loadBenchmarks(): BenchmarkStore {
     }
   }
 
+  if (fallback && fallback.environments) {
+    for (const [key, env] of Object.entries(fallback.environments)) {
+      if (!environments.has(key)) environments.set(key, env);
+    }
+  }
+
   return {
     runs,
     latest,
@@ -43,23 +51,27 @@ export function loadBenchmarks(): BenchmarkStore {
   };
 }
 
-function loadRuns(): ParsedRun[] {
-  // Try loading from the data repo clone (CI provides this)
+function loadRunsFromData(): ParsedRun[] {
   const modules = import.meta.glob('/data/runs/**/*.yaml', {
     eager: true,
     import: 'default',
   }) as Record<string, any>;
 
   const runs: ParsedRun[] = [];
-
   for (const [path, yaml] of Object.entries(modules)) {
     const filename = path.split('/').pop() ?? '';
-    const parsed = parseResultsYaml(
-      { ...yaml, __path: path },
-      filename,
-    );
+    const parsed = parseResultsYaml({ ...yaml, __path: path }, filename);
     if (parsed) runs.push(parsed);
   }
-
   return runs;
+}
+
+function loadFallbackPayload(): DashboardPayload | null {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const sample = require('../../data/sample.json');
+    return sample as DashboardPayload;
+  } catch {
+    return null;
+  }
 }
