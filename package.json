@@ -7,7 +7,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "generate:sample-data": "node scripts/gen-sample-data.mjs"
+    "generate:sample-data": "node scripts/gen-sample-data.mjs",
+    "test": "vitest run"
   },
   "dependencies": {
     "@astrojs/vue": "^7.0.2",
