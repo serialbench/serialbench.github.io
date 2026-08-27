@@ -1,0 +1,36 @@
+benchmark_result:
+  generation: []
+  memory: []
+  parsing:
+  - adapter: nokogiri
+    data_size: small
+    format: xml
+    iterations_per_second: 2100
+    time_per_iteration: 0.000476
+  - adapter: nokogiri
+    data_size: large
+    format: xml
+    iterations_per_second: 11.2
+    time_per_iteration: 0.0893
+  - adapter: leptris
+    data_size: small
+    format: xml
+    iterations_per_second: 8500
+    time_per_iteration: 0.000118
+  - adapter: leptris
+    data_size: large
+    format: xml
+    iterations_per_second: 125
+    time_per_iteration: 0.008
+  serializers:
+  - format: xml
+    name: nokogiri
+    version: 1.19.4
+  - format: xml
+    name: leptris
+    version: 1.9.2
+  streaming: []
+platform:
+  arch: x86_64
+  os: linux
+  ruby_version: 3.4.8

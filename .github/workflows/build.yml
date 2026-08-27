@@ -1,0 +1,66 @@
+name: build-and-deploy
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    # Rebuild Mondays after Sunday benchmark runs
+    - cron: '0 4 * * 1'
+  workflow_dispatch:
+  repository_dispatch:
+    types: [data-updated]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch benchmark data
+        run: |
+          git clone --depth 1 https://github.com/serialbench/data.git data
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+
+      - uses: actions/configure-pages@v4
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Smoke test
+        run: |
+          sleep 10
+          BASE_URL="https://serialbench.github.io/serialbench"
+          INDEX=$(curl -sf "$BASE_URL/" || echo "")
+          if ! echo "$INDEX" | grep -q "Serialbench"; then
+            echo "FAIL: index.html missing expected content"
+            exit 1
+          fi
+          echo "Smoke test passed"
