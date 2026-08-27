@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { parseResultsYaml } from '../parser';
-import yaml from 'js-yaml';
+import { load as yamlLoad } from 'js-yaml';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
@@ -8,7 +8,7 @@ const fixtureDir = resolve(__dirname, 'fixtures/runs/2026-08-30');
 
 function loadFixture(name: string) {
   const content = readFileSync(resolve(fixtureDir, name), 'utf8');
-  return yaml.load(content) as Record<string, any>;
+  return yamlLoad(content) as Record<string, any>;
 }
 
 describe('parseResultsYaml', () => {

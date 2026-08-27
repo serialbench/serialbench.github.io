@@ -1,4 +1,4 @@
-import jsYaml from 'js-yaml';
+import { load as yamlLoad } from 'js-yaml';
 import { parseResultsYaml } from './parser';
 import { buildDashboardPayload } from './aggregator';
 import { buildVersionTimeline } from './versions';
@@ -65,7 +65,7 @@ function loadRunsFromData(): ParsedRun[] {
   for (const [path, raw] of Object.entries(modules)) {
     const filename = path.split('/').pop() ?? '';
     try {
-      const yaml = jsYaml.load(raw) as Record<string, any>;
+      const yaml = yamlLoad(raw) as Record<string, any>;
       const parsed = parseResultsYaml({ ...yaml, __path: path }, filename);
       if (parsed) runs.push(parsed);
     } catch (e) {
