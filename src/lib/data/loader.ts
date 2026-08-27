@@ -2,19 +2,21 @@ import { parseResultsYaml } from './parser';
 import { buildDashboardPayload } from './aggregator';
 import { buildVersionTimeline } from './versions';
 import { buildTrend } from './trend';
-import type { ParsedRun, BenchmarkStore, DashboardPayload, VersionSpan, TrendPoint, Environment } from './types';
+import type { ParsedRun, BenchmarkStore, DashboardPayload, Environment } from './types';
 
 // The single entry point: loads all YAML run files from the data
 // directory (cloned by CI) and returns a fully-populated store.
-//
-// Falls back to the legacy sample.json if the data/ directory doesn't
-// exist (development without a data clone).
+// Falls back to the generated sample.json in development.
 
 export function loadBenchmarks(): BenchmarkStore {
   const runs = loadRunsFromData();
-  const fallback = runs.length === 0 ? loadFallbackPayload() : null;
 
-  const latest = runs.length > 0 ? buildDashboardPayload(runs) : (fallback as DashboardPayload);
+  let latest: DashboardPayload;
+  if (runs.length > 0) {
+    latest = buildDashboardPayload(runs);
+  } else {
+    latest = loadFallbackPayload() ?? emptyPayload();
+  }
 
   const versions = new Map<string, Set<string>>();
   const environments = new Map<string, Environment>();
@@ -34,8 +36,8 @@ export function loadBenchmarks(): BenchmarkStore {
     }
   }
 
-  if (fallback && fallback.environments) {
-    for (const [key, env] of Object.entries(fallback.environments)) {
+  if (latest.environments) {
+    for (const [key, env] of Object.entries(latest.environments)) {
       if (!environments.has(key)) environments.set(key, env);
     }
   }
@@ -67,11 +69,24 @@ function loadRunsFromData(): ParsedRun[] {
 }
 
 function loadFallbackPayload(): DashboardPayload | null {
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const sample = require('../../data/sample.json');
-    return sample as DashboardPayload;
-  } catch {
-    return null;
-  }
+  const sample = import.meta.glob('../data/sample.json', {
+    eager: true,
+    import: 'default',
+  }) as Record<string, any>;
+
+  const key = Object.keys(sample)[0];
+  return key ? (sample[key] as DashboardPayload) : null;
+}
+
+function emptyPayload(): DashboardPayload {
+  return {
+    combined_results: {},
+    environments: {},
+    libraries: [],
+    metadata: {
+      latest_run: '',
+      total_runs: 0,
+      generated_at: new Date().toISOString(),
+    },
+  };
 }
