@@ -87,10 +87,24 @@ export function availableSizes(payload: Payload, op: string, format: string): st
   });
 }
 
+const OS_ORDER: Record<string, number> = {
+  'macos-26': 100, 'macos-26-intel': 99,
+  'macos-15': 90, 'macos-15-intel': 89,
+  'macos-14': 80,
+  'windows-2025': 70, 'windows-11-arm': 69, 'windows-2022': 68,
+  'ubuntu-24.04': 60, 'ubuntu-24.04-arm': 59,
+  'ubuntu-22.04': 50, 'ubuntu-22.04-arm': 49,
+};
+
+function osRank(key: string): number {
+  const runner = key.replace(/-ruby-.*$/, '');
+  return OS_ORDER[runner] ?? 0;
+}
+
 export function environmentList(payload: Payload): { key: string; env: Environment }[] {
   return Object.entries(payload.environments)
     .map(([key, env]) => ({ key, env }))
-    .sort((a, b) => b.env.timestamp.localeCompare(a.env.timestamp));
+    .sort((a, b) => osRank(b.key) - osRank(a.key));
 }
 
 // Env keys are runner-shaped ("macos-26-intel-ruby-3.4") when produced by CI,
@@ -196,10 +210,11 @@ export function formatIps(ips: number): string {
   return ips.toFixed(2);
 }
 
-export function formatMemory(mb: number): string {
-  if (mb >= 1000) return `${(mb / 1000).toFixed(2)} GB`;
-  if (mb >= 1) return `${mb.toFixed(1)} MB`;
-  return `${(mb * 1024).toFixed(0)} KB`;
+export function formatMemory(bytes: number): string {
+  if (bytes >= 1024 ** 3) return `${(bytes / 1024 ** 3).toFixed(2)} GB`;
+  if (bytes >= 1024 ** 2) return `${(bytes / 1024 ** 2).toFixed(1)} MB`;
+  if (bytes >= 1024) return `${(bytes / 1024).toFixed(0)} KB`;
+  return `${bytes} B`;
 }
 
 export function primaryEnvKey(payload: Payload): string {

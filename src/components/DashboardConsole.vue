@@ -17,6 +17,7 @@ import CalibratedLeaderboard from './CalibratedLeaderboard.vue';
 import OpsChart from './OpsChart.vue';
 import MemoryPanel from './MemoryPanel.vue';
 import CitationBox from './CitationBox.vue';
+import CrossComparison from './CrossComparison.vue';
 
 const props = defineProps<{ payload: Payload }>();
 
@@ -164,6 +165,13 @@ const envLabel = computed(() => {
       :reference="reference"
       :caption="`${envLabel} · ${OPERATION_LABELS[op as keyof typeof OPERATION_LABELS] ?? op} · ${size} input`"
       @pin="(name: string) => (reference = reference === name ? null : name)"
+    />
+
+    <CrossComparison
+      :payload="payload"
+      :format="format"
+      :op="op"
+      :size="size"
     />
 
     <div class="grid lg:grid-cols-2 gap-6 mt-10">
