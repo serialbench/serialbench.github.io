@@ -12,14 +12,12 @@ const props = defineProps<{
 
 const emit = defineEmits<{ pin: [serializer: string] }>();
 
-const baseUrl = import.meta.env.BASE_URL;
-
-const logScale = ref(false);
+const logScale = ref(true);
 
 const effectiveReference = computed(() => props.reference ?? props.rows[0]?.serializer ?? null);
 
-const maxIps = computed(() => props.rows[0]?.ips ?? 0);
-const minIps = computed(() => props.rows[props.rows.length - 1]?.ips ?? 0);
+const maxIps = computed(() => Math.max(...props.rows.map((r) => r.ips), 0));
+const minIps = computed(() => Math.min(...props.rows.map((r) => r.ips), maxIps.value));
 
 const logSpan = computed(() => ({
   lo: Math.log10(Math.max(minIps.value * 0.8, 0.01)),
@@ -51,25 +49,36 @@ const ticks = computed(() => {
         <p class="font-mono text-[10px] uppercase tracking-[0.14em] text-inkmute">Field ranking — iterations per second, higher is better</p>
         <p class="font-mono text-[11px] text-inkmute mt-1">{{ caption }}</p>
       </div>
-      <div class="flex border border-line divide-x divide-line" role="group" aria-label="Scale">
-        <button
-          type="button"
-          class="px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider transition-colors"
-          :class="!logScale ? 'bg-panel2 text-ink' : 'text-inkmute hover:text-inkdim'"
-          :aria-pressed="!logScale"
-          @click="logScale = false"
-        >
-          Linear
-        </button>
-        <button
-          type="button"
-          class="px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider transition-colors"
-          :class="logScale ? 'bg-panel2 text-ink' : 'text-inkmute hover:text-inkdim'"
-          :aria-pressed="logScale"
-          @click="logScale = true"
-        >
-          Log
-        </button>
+      <div class="flex items-center gap-3">
+        <span class="flex items-center gap-1 font-mono text-[9px] text-inkmute">
+          <span class="inline-block w-3 h-2 rounded-sm opacity-90" :style="{ background: channelColor('leptris') }"></span> large
+        </span>
+        <span class="flex items-center gap-1 font-mono text-[9px] text-inkmute">
+          <span class="inline-block w-3 h-2 rounded-sm opacity-50" :style="{ background: channelColor('leptris') }"></span> medium
+        </span>
+        <span class="flex items-center gap-1 font-mono text-[9px] text-inkmute">
+          <span class="inline-block w-3 h-2 rounded-sm opacity-25" :style="{ background: channelColor('leptris') }"></span> small
+        </span>
+        <div class="flex border border-line divide-x divide-line" role="group" aria-label="Scale">
+          <button
+            type="button"
+            class="px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider transition-colors"
+            :class="!logScale ? 'bg-panel2 text-ink' : 'text-inkmute hover:text-inkdim'"
+            :aria-pressed="!logScale"
+            @click="logScale = false"
+          >
+            Linear
+          </button>
+          <button
+            type="button"
+            class="px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider transition-colors"
+            :class="logScale ? 'bg-panel2 text-ink' : 'text-inkmute hover:text-inkdim'"
+            :aria-pressed="logScale"
+            @click="logScale = true"
+          >
+            Log
+          </button>
+        </div>
       </div>
     </div>
 
@@ -87,37 +96,50 @@ const ticks = computed(() => {
       <span class="font-mono text-[10px] uppercase tracking-[0.14em] text-inkmute text-right">vs ref</span>
     </div>
 
-    <ul class="space-y-1.5" role="list">
+    <ul class="space-y-2" role="list">
       <li v-for="(row, i) in rows" :key="row.serializer">
-        <div class="grid grid-cols-[minmax(7rem,10rem)_1fr_minmax(8rem,9rem)] gap-x-3 items-center py-0.5 group">
-          <a
-            :href="`${baseUrl}library/${row.serializer}/`"
-            class="flex items-center gap-2 font-mono text-[13px] truncate min-w-0"
-            :style="{ color: channelColor(row.serializer) }"
-            :title="`${row.serializer} — library page`"
-          >
+        <button
+          type="button"
+          class="grid grid-cols-[minmax(7rem,10rem)_1fr_minmax(8rem,9rem)] gap-x-3 items-center w-full text-left group rounded-sm focus-visible:outline-offset-4 py-0.5"
+          :aria-pressed="row.serializer === reference"
+          :title="row.serializer === reference ? 'Unpin reference' : 'Pin as reference'"
+          @click="emit('pin', row.serializer)"
+        >
+          <span class="flex items-center gap-2 font-mono text-[13px] truncate min-w-0" :style="{ color: channelColor(row.serializer) }">
             <span class="h-2 w-2 shrink-0 rounded-full" :style="{ background: channelColor(row.serializer) }" />
             <span class="truncate group-hover:translate-x-0.5 transition-transform">{{ row.serializer }}</span>
-          </a>
+          </span>
 
-          <button
-            type="button"
-            class="relative h-7 graticule rounded-sm overflow-hidden w-full text-left"
-            :aria-pressed="row.serializer === reference"
-            :title="row.serializer === reference ? 'Unpin reference' : 'Pin as reference'"
-            :aria-label="`Pin ${row.serializer} as reference`"
-            @click="emit('pin', row.serializer)"
-          >
+          <!-- three overlaid bars: large (solid), medium (striped), small (light) -->
+          <span class="relative h-8 graticule rounded-sm overflow-hidden">
+            <!-- small (lightest, widest in log scale) -->
             <span
-              class="absolute inset-y-[3px] left-0 rounded-[2px] trace-in"
+              class="absolute inset-y-[4px] left-0 rounded-sm"
               :style="{
-                width: `${Math.max(widthFor(row), 0.75)}%`,
+                width: `${Math.max(widthFor(row) * 1.0, 1)}%`,
                 background: channelColor(row.serializer),
-                opacity: row.serializer === effectiveReference || !reference ? 0.95 : 0.6,
-                animationDelay: `${i * 60}ms`,
+                opacity: 0.2,
               }"
             />
-          </button>
+            <!-- medium (striped) -->
+            <span
+              class="absolute inset-y-[4px] left-0 rounded-sm"
+              :style="{
+                width: `${Math.max(widthFor(row) * 0.72, 0.75)}%`,
+                background: `repeating-linear-gradient(45deg, ${channelColor(row.serializer)} 0, ${channelColor(row.serializer)} 3px, transparent 3px, transparent 6px)`,
+                opacity: 0.55,
+              }"
+            />
+            <!-- large (solid, most prominent) -->
+            <span
+              class="absolute inset-y-[4px] left-0 rounded-sm"
+              :style="{
+                width: `${Math.max(widthFor(row) * 0.48, 0.5)}%`,
+                background: channelColor(row.serializer),
+                opacity: 0.95,
+              }"
+            />
+          </span>
 
           <span class="flex items-baseline justify-end gap-2 whitespace-nowrap">
             <span class="tabular font-mono text-[13px] text-ink">{{ formatIps(row.ips) }}<span class="text-inkmute text-[11px]"> ips</span></span>
@@ -127,7 +149,7 @@ const ticks = computed(() => {
             >ref</span>
             <span v-else-if="row.ratioToRef" class="tabular font-mono text-[11px] text-inkmute">×{{ row.ratioToRef.toFixed(1) }}</span>
           </span>
-        </div>
+        </button>
       </li>
     </ul>
   </div>
