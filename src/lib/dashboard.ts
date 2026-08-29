@@ -33,12 +33,13 @@ export interface Payload {
   libraries?: LibraryInfo[];
 }
 
-export const OPERATIONS = ['parsing', 'generation', 'streaming'] as const;
+export const OPERATIONS = ['parsing', 'generation', 'xpath', 'streaming'] as const;
 export type Operation = (typeof OPERATIONS)[number];
 
 export const OPERATION_LABELS: Record<Operation, string> = {
   parsing: 'Parse',
   generation: 'Generate',
+  xpath: 'XPath',
   streaming: 'Stream',
 };
 

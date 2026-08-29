@@ -25,6 +25,7 @@ export function parseResultsYaml(
     serializers: (br.serializers ?? []).map((s: any) => ({
       name: s.name,
       version: s.version ?? 'unknown',
+      features: s.features ?? undefined,
     })),
     platform_info: {
       os: yaml.platform?.os ?? platform.split('-')[0],
@@ -33,6 +34,7 @@ export function parseResultsYaml(
     },
     parsing: indexBySerializer(br.parsing, 'iterations_per_second'),
     generation: indexBySerializer(br.generation, 'iterations_per_second'),
+    xpath: indexBySerializer(br.xpath, 'iterations_per_second'),
     streaming: indexBySerializer(br.streaming, 'iterations_per_second'),
     memory: indexBySerializer(br.memory, 'allocated_memory'),
   };

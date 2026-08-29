@@ -18,6 +18,7 @@ import OpsChart from './OpsChart.vue';
 import MemoryPanel from './MemoryPanel.vue';
 import CitationBox from './CitationBox.vue';
 import CrossComparison from './CrossComparison.vue';
+import { channelColor } from '../lib/channels';
 
 const props = defineProps<{ payload: Payload }>();
 
@@ -87,6 +88,17 @@ const rows = computed(() =>
 const mem = computed(() => memoryRows(props.payload, size.value, format.value, envKey.value));
 
 const serializers = computed(() => serializersFor(props.payload, format.value));
+
+const capabilityRows = computed(() =>
+  (props.payload.libraries ?? [])
+    .filter((l) => l.format === format.value && Object.keys(l.features ?? {}).length > 0)
+    .map((l) => ({
+      name: l.name,
+      supported: Object.entries(l.features)
+        .filter(([, v]) => v)
+        .map(([k]) => k),
+    })),
+);
 
 const envLabel = computed(() => {
   const entry = envs.value.find((e) => e.key === envKey.value);
@@ -158,6 +170,24 @@ const envLabel = computed(() => {
           <option v-for="e in envs" :key="e.key" :value="e.key">{{ environmentLabel(e.key, e.env) }}</option>
         </select>
       </label>
+    </div>
+
+    <div
+      v-if="capabilityRows.length > 0"
+      aria-label="Adapter capabilities"
+      class="flex flex-wrap gap-x-6 gap-y-2 mb-6 border border-line bg-panel rounded-lg px-4 py-3"
+    >
+      <span class="font-mono text-[10px] uppercase tracking-[0.14em] text-inkmute self-center">Capabilities</span>
+      <div v-for="row in capabilityRows" :key="row.name" class="flex items-center gap-2 flex-wrap">
+        <span class="h-2 w-2 rounded-full shrink-0" :style="{ background: channelColor(row.name) }" />
+        <span class="font-mono text-[11px] text-inkdim">{{ row.name }}</span>
+        <span
+          v-for="cap in row.supported"
+          :key="cap"
+          class="font-mono text-[10px] px-1.5 py-0.5 border border-line rounded text-inkmute"
+        >{{ cap }}</span>
+        <span v-if="row.supported.length === 0" class="font-mono text-[10px] text-inkmute/50">—</span>
+      </div>
     </div>
 
     <CalibratedLeaderboard

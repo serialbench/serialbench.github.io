@@ -7,6 +7,7 @@ export function buildDashboardPayload(runs: ParsedRun[]): DashboardPayload {
   const combined: DashboardPayload['combined_results'] = {};
   const environments: Record<string, Environment> = {};
   const versions = new Map<string, string>();
+  const features = new Map<string, Record<string, boolean>>();
 
   // Process oldest → newest so later runs overwrite earlier ones
   const sorted = [...runs].sort((a, b) => a.date.localeCompare(b.date));
@@ -14,6 +15,7 @@ export function buildDashboardPayload(runs: ParsedRun[]): DashboardPayload {
   for (const run of sorted) {
     for (const s of run.serializers) {
       versions.set(s.name, s.version);
+      if (s.features) features.set(s.name, s.features);
     }
 
     environments[run.envKey] ??= {
@@ -23,7 +25,7 @@ export function buildDashboardPayload(runs: ParsedRun[]): DashboardPayload {
       timestamp: run.date,
     };
 
-    for (const op of ['parsing', 'generation', 'streaming', 'memory'] as const) {
+    for (const op of ['parsing', 'generation', 'xpath', 'streaming', 'memory'] as const) {
       const data = run[op];
       for (const [serializer, sizes] of Object.entries(data)) {
         for (const [size, metric] of Object.entries(sizes)) {
@@ -41,7 +43,7 @@ export function buildDashboardPayload(runs: ParsedRun[]): DashboardPayload {
     name,
     version,
     format: inferFormat(name, runs),
-    features: {},
+    features: features.get(name) ?? {},
   }));
 
   const latestRun = sorted[sorted.length - 1];
