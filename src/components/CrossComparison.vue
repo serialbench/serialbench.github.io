@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import type { Payload, Environment } from '../lib/dashboard';
+import type { PerfMetric } from '../lib/data/types';
 import { formatIps } from '../lib/dashboard';
 import { channelColor } from '../lib/channels';
 
@@ -75,8 +76,8 @@ const matrix = computed(() => {
         key,
         label: envShortLabel(key, env),
         group,
-        ips: metric && (metric as any).iterations_per_second != null
-          ? (metric as any).iterations_per_second
+        ips: metric && (metric as PerfMetric).iterations_per_second != null
+          ? (metric as PerfMetric).iterations_per_second
           : null,
       };
     });

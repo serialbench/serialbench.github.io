@@ -13,6 +13,7 @@ function mkRun(date: string, serializer: string, version: string): ParsedRun {
     platform_info: { os: 'linux', arch: 'x86_64', ruby_version: '3.4' },
     parsing: {},
     generation: {},
+    xpath: {},
     streaming: {},
     memory: {},
   };

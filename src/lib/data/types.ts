@@ -15,6 +15,7 @@ export interface MemoryMetric {
 export interface SerializerInfo {
   name: string;
   version: string;
+  features?: Record<string, boolean>;
 }
 
 export interface PlatformInfo {
@@ -33,6 +34,7 @@ export interface ParsedRun {
   platform_info: PlatformInfo;
   parsing: Record<string, Record<string, PerfMetric>>;
   generation: Record<string, Record<string, PerfMetric>>;
+  xpath: Record<string, Record<string, PerfMetric>>;
   streaming: Record<string, Record<string, PerfMetric>>;
   memory: Record<string, Record<string, MemoryMetric>>;
 }

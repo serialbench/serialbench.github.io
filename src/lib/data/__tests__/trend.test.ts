@@ -17,6 +17,7 @@ function mkRun(date: string, envKey: string, format: string, ips: number, versio
       },
     },
     generation: {},
+    xpath: {},
     streaming: {},
     memory: {},
   };
