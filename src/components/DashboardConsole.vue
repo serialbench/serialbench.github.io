@@ -96,7 +96,7 @@ const capabilityRows = computed(() =>
       name: l.name,
       supported: Object.entries(l.features)
         .filter(([, v]) => v)
-        .map(([k]) => k),
+        .map(([k]) => k.replace(/^:/, '')),
     })),
 );
 
