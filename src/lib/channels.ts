@@ -17,6 +17,9 @@ export const CHANNELS: Record<string, string> = {
   'toml-rb': '#e88b6a',
   tomlib: '#6ab0e8',
   tomlrb: '#d4e87b',
+  'yeptris-yaml': '#4ec9b0',
+  'yeptris-json': '#569cd6',
+  teptris: '#ce9178',
 };
 
 export function channelColor(serializer: string): string {
