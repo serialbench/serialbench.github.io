@@ -20,6 +20,7 @@ export function buildDashboardPayload(runs: ParsedRun[]): DashboardPayload {
 
     environments[run.envKey] ??= {
       ruby_version: run.platform_info.ruby_version,
+      runtime: run.runtime,
       os: run.platform_info.os,
       arch: run.platform_info.arch,
       timestamp: run.date,

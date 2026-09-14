@@ -3,6 +3,7 @@ import { computed, onMounted, ref, watch } from 'vue';
 import type { Payload } from '../lib/dashboard';
 import {
   availableFormats,
+  availableRuntimes,
   availableOperations,
   availableSizes,
   environmentLabel,
@@ -22,6 +23,9 @@ import { channelColor } from '../lib/channels';
 
 const props = defineProps<{ payload: Payload }>();
 
+const runtimes = computed(() => availableRuntimes(props.payload));
+const runtime = ref(runtimes.value[0] ?? 'ruby');
+
 const formats = computed(() => availableFormats(props.payload));
 const format = ref(formats.value[0] ?? 'xml');
 
@@ -31,7 +35,7 @@ const op = ref<string>('parsing');
 const sizes = computed(() => availableSizes(props.payload, op.value, format.value));
 const size = ref<string>('large');
 
-const envs = computed(() => environmentList(props.payload));
+const envs = computed(() => environmentList(props.payload, runtime.value));
 const envKey = ref(envs.value[0]?.key ?? '');
 
 const reference = ref<string | null>(null);
@@ -110,6 +114,23 @@ const envLabel = computed(() => {
   <section aria-label="Benchmark console">
     <!-- control rail -->
     <div class="flex flex-wrap items-end gap-x-8 gap-y-4 border-y border-line py-3 mb-8">
+      <fieldset v-if="runtimes.length > 1">
+        <legend class="font-mono text-[10px] uppercase tracking-[0.14em] text-inkmute mb-1.5">Runtime</legend>
+        <div class="flex border border-line divide-x divide-line" role="group">
+          <button
+            v-for="rt in runtimes"
+            :key="rt"
+            type="button"
+            class="px-3 py-1.5 font-mono text-xs uppercase tracking-wide transition-colors"
+            :class="rt === runtime ? 'bg-phosphor text-phosphorink' : 'text-inkdim hover:text-ink'"
+            :aria-pressed="rt === runtime"
+            @click="runtime = rt"
+          >
+            {{ rt }}
+          </button>
+        </div>
+      </fieldset>
+
       <fieldset>
         <legend class="font-mono text-[10px] uppercase tracking-[0.14em] text-inkmute mb-1.5">Format</legend>
         <div class="flex border border-line divide-x divide-line" role="group">
