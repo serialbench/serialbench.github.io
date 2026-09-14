@@ -43,7 +43,7 @@ export function availableRuntimes(payload: Payload): string[] {
   return RUNTIMES.filter((r) => set.has(r));
 }
 
-export const OPERATIONS = ['parsing', 'generation', 'xpath', 'xquery', 'xslt', 'validation', 'streaming'] as const;
+export const OPERATIONS = ['parsing', 'generation', 'xpath', 'xquery', 'xslt', 'xslt30', 'validation', 'streaming'] as const;
 export type Operation = (typeof OPERATIONS)[number];
 
 export const OPERATION_LABELS: Record<Operation, string> = {
@@ -52,6 +52,7 @@ export const OPERATION_LABELS: Record<Operation, string> = {
   xpath: 'XPath',
   xquery: 'XQuery',
   xslt: 'XSLT',
+  xslt30: 'XSLT 3.0',
   validation: 'Validate',
   streaming: 'Stream',
 };

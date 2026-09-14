@@ -16,6 +16,7 @@ function mkRun(date: string, serializer: string, version: string): ParsedRun {
     xpath: {},
     xquery: {},
     xslt: {},
+    xslt30: {},
     validation: {},
     streaming: {},
     memory: {},
