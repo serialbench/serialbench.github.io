@@ -33,6 +33,16 @@ export interface Payload {
   libraries?: LibraryInfo[];
 }
 
+export const RUNTIMES = ['ruby', 'python', 'c'] as const;
+
+export function availableRuntimes(payload: Payload): string[] {
+  const set = new Set<string>();
+  for (const env of Object.values(payload.environments)) {
+    if ((env as any).runtime) set.add((env as any).runtime);
+  }
+  return RUNTIMES.filter((r) => set.has(r));
+}
+
 export const OPERATIONS = ['parsing', 'generation', 'xpath', 'streaming'] as const;
 export type Operation = (typeof OPERATIONS)[number];
 
@@ -98,13 +108,14 @@ const OS_ORDER: Record<string, number> = {
 };
 
 function osRank(key: string): number {
-  const runner = key.replace(/-ruby-.*$/, '');
+  const runner = key.replace(/-(ruby|python|c)-.*$/, '');
   return OS_ORDER[runner] ?? 0;
 }
 
-export function environmentList(payload: Payload): { key: string; env: Environment }[] {
+export function environmentList(payload: Payload, runtime?: string): { key: string; env: Environment }[] {
   return Object.entries(payload.environments)
     .map(([key, env]) => ({ key, env }))
+    .filter((e) => !runtime || (e.env as any).runtime === runtime)
     .sort((a, b) => osRank(b.key) - osRank(a.key));
 }
 
@@ -112,7 +123,7 @@ export function environmentList(payload: Payload): { key: string; env: Environme
 // or "macos-arm64-ruby-3.4" (os-arch) for docker/local/legacy results.
 export function environmentLabel(key: string, env: Environment): string {
   const arch = env.arch === 'x86_64' ? 'x64' : env.arch;
-  const runner = key.replace(/-ruby-[^-]*$/, '');
+  const runner = key.replace(/-(ruby|python|c)-[^-]*(-[^-]*)?$/, '');
   const m = runner.match(/^(ubuntu|macos|windows)-(\d+(?:\.\d+)?)(?:-(arm|intel|large))?$/);
   if (m) {
     const osName = m[1].replace('ubuntu', 'Ubuntu').replace('windows', 'Windows').replace('macos', 'macOS');
@@ -125,7 +136,7 @@ export function environmentLabel(key: string, env: Environment): string {
 
 // Short runner label for table headers: "macos-26-intel-ruby-3.4" → "macOS 26 Intel"
 export function runnerShortLabel(key: string, env: Environment): string {
-  const runner = key.replace(/-ruby-[^-]*$/, '');
+  const runner = key.replace(/-(ruby|python|c)-[^-]*(-[^-]*)?$/, '');
   const m = runner.match(/^(ubuntu|macos|windows)-(\d+(?:\.\d+)?)(?:-(arm|intel|large))?$/);
   if (m) {
     const osName = m[1].replace('ubuntu', 'Ubuntu').replace('windows', 'Windows').replace('macos', 'macOS');

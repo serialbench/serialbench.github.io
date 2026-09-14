@@ -6,14 +6,14 @@ export function parseResultsYaml(
   yaml: Record<string, any>,
   filename: string,
 ): ParsedRun | null {
-  const match = filename.match(/^([a-z0-9.-]+)-ruby-(\d+\.\d+)\.(\w+)\.yaml$/);
+  const match = filename.match(/^([a-z0-9.-]+)-(ruby|python|c)-([\w.+-]+)\.(\w+)\.yaml$/);
   if (!match) return null;
 
-  const [, platform, ruby, format] = match;
+  const [, platform, runtime, ruby, format] = match;
   const date = extractDateFromPath(yaml.__path ?? '');
   if (!date) return null;
 
-  const envKey = `${platform}-ruby-${ruby}`;
+  const envKey = `${platform}-${runtime}-${ruby}`;
   const br = yaml.benchmark_result ?? {};
 
   return {
@@ -22,6 +22,7 @@ export function parseResultsYaml(
     ruby,
     format,
     envKey,
+    runtime,
     serializers: (br.serializers ?? []).map((s: any) => ({
       name: s.name,
       version: s.version ?? 'unknown',

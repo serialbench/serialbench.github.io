@@ -22,9 +22,11 @@ export interface PlatformInfo {
   os: string;
   arch: string;
   ruby_version: string;
+  runtime: string;
 }
 
 export interface ParsedRun {
+  runtime: string;
   date: string;
   platform: string;
   ruby: string;
@@ -53,6 +55,7 @@ export interface TrendPoint {
 
 export interface Environment {
   ruby_version: string;
+  runtime: string;
   os: string;
   arch: string;
   timestamp: string;
