@@ -18,6 +18,9 @@ function mkRun(date: string, envKey: string, format: string): ParsedRun {
     },
     generation: {},
     xpath: {},
+    xquery: {},
+    xslt: {},
+    validation: {},
     streaming: {},
     memory: {},
   };

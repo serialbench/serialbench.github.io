@@ -26,7 +26,7 @@ export function buildDashboardPayload(runs: ParsedRun[]): DashboardPayload {
       timestamp: run.date,
     };
 
-    for (const op of ['parsing', 'generation', 'xpath', 'streaming', 'memory'] as const) {
+    for (const op of ['parsing', 'generation', 'xpath', 'xquery', 'xslt', 'validation', 'streaming', 'memory'] as const) {
       const data = run[op];
       for (const [serializer, sizes] of Object.entries(data)) {
         for (const [size, metric] of Object.entries(sizes)) {

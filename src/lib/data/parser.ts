@@ -36,6 +36,9 @@ export function parseResultsYaml(
     parsing: indexBySerializer(br.parsing, 'iterations_per_second'),
     generation: indexBySerializer(br.generation, 'iterations_per_second'),
     xpath: indexBySerializer(br.xpath, 'iterations_per_second'),
+    xquery: indexBySerializer(br.xquery, 'iterations_per_second'),
+    xslt: indexBySerializer(br.xslt, 'iterations_per_second'),
+    validation: indexBySerializer(br.validation, 'iterations_per_second'),
     streaming: indexBySerializer(br.streaming, 'iterations_per_second'),
     memory: indexBySerializer(br.memory, 'allocated_memory'),
   };
