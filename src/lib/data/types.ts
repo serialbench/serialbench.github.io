@@ -37,6 +37,9 @@ export interface ParsedRun {
   parsing: Record<string, Record<string, PerfMetric>>;
   generation: Record<string, Record<string, PerfMetric>>;
   xpath: Record<string, Record<string, PerfMetric>>;
+  xquery: Record<string, Record<string, PerfMetric>>;
+  xslt: Record<string, Record<string, PerfMetric>>;
+  validation: Record<string, Record<string, PerfMetric>>;
   streaming: Record<string, Record<string, PerfMetric>>;
   memory: Record<string, Record<string, MemoryMetric>>;
 }

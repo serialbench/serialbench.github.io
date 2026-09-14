@@ -14,6 +14,9 @@ function mkRun(date: string, serializer: string, version: string): ParsedRun {
     parsing: {},
     generation: {},
     xpath: {},
+    xquery: {},
+    xslt: {},
+    validation: {},
     streaming: {},
     memory: {},
   };
