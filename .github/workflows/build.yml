@@ -62,11 +62,15 @@ jobs:
 
       - name: Smoke test
         run: |
-          sleep 10
-          BASE_URL="https://serialbench.github.io/serialbench"
-          INDEX=$(curl -sf "$BASE_URL/" || echo "")
-          if ! echo "$INDEX" | grep -q "Serialbench"; then
-            echo "FAIL: index.html missing expected content"
-            exit 1
-          fi
-          echo "Smoke test passed"
+          # Org page serves at root; allow Pages CDN propagation lag
+          for i in 1 2 3 4 5 6; do
+            sleep 15
+            INDEX=$(curl -sf "https://serialbench.github.io/" || true)
+            if echo "$INDEX" | grep -q "Serialbench"; then
+              echo "Smoke test passed (attempt $i)"
+              exit 0
+            fi
+            echo "attempt $i: not serving expected content yet"
+          done
+          echo "FAIL: index.html missing expected content"
+          exit 1
