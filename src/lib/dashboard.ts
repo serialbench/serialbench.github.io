@@ -71,7 +71,7 @@ function metricsFor(payload: Payload, op: string, size: string, format: string):
   return byFormat as Record<string, Record<string, PerfMetric>>;
 }
 
-const FORMAT_ORDER = ['xml', 'json', 'yaml', 'toml'];
+const FORMAT_ORDER = ['xml', 'json', 'yaml', 'toml', 'html', 'cbor'];
 
 export function availableFormats(payload: Payload): string[] {
   const formats = new Set<string>();

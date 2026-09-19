@@ -19,7 +19,24 @@ export const CHANNELS: Record<string, string> = {
   tomlrb: '#d4e87b',
   'yeptris-yaml': '#4ec9b0',
   'yeptris-json': '#569cd6',
+  'yeptris-cbor': '#c586c0',
   teptris: '#ce9178',
+  // C field
+  'libxml2': '#c45b4b',
+  libxslt: '#b0653a',
+  jansson: '#e8926a',
+  'json-c': '#d4a25e',
+  'nlohmann-json': '#8fc97b',
+  simdjson: '#5ee07b',
+  pugixml: '#e8d44d',
+  libyaml: '#a89078',
+  rapidyaml: '#e07b5e',
+  tomlc17: '#a06ee0',
+  libcbor: '#6ab0c9',
+  tinycbor: '#7bd48f',
+  cbor: '#e09b6a',
+  cbor2: '#e0b06a',
+  'leptris-whatwg': '#3aa8c1',
 };
 
 export function channelColor(serializer: string): string {
