@@ -19,6 +19,7 @@ export interface Environment {
   arch: string;
   timestamp: string;
   source_file?: string;
+  runtime?: string;
 }
 
 export interface Payload {
@@ -35,10 +36,16 @@ export interface Payload {
 
 export const RUNTIMES = ['ruby', 'python', 'c'] as const;
 
+const RUNTIME_LABELS: Record<string, string> = { ruby: 'Ruby', python: 'Python', c: 'C' };
+
+export function runtimeName(runtime?: string): string {
+  return RUNTIME_LABELS[runtime ?? 'ruby'] ?? runtime ?? 'runtime';
+}
+
 export function availableRuntimes(payload: Payload): string[] {
   const set = new Set<string>();
   for (const env of Object.values(payload.environments)) {
-    if ((env as any).runtime) set.add((env as any).runtime);
+    if (env.runtime) set.add(env.runtime);
   }
   return RUNTIMES.filter((r) => set.has(r));
 }
@@ -132,10 +139,10 @@ export function environmentLabel(key: string, env: Environment): string {
   if (m) {
     const osName = m[1].replace('ubuntu', 'Ubuntu').replace('windows', 'Windows').replace('macos', 'macOS');
     const variant = m[3] === 'intel' ? ' Intel' : '';
-    return `${osName} ${m[2]}${variant} · ${arch} · Ruby ${env.ruby_version}`;
+    return `${osName} ${m[2]}${variant} · ${arch} · ${runtimeName(env.runtime)} ${env.ruby_version}`;
   }
   const osName = env.os.replace('ubuntu', 'Ubuntu').replace('windows', 'Windows').replace('macos', 'macOS');
-  return `${osName} · ${arch} · Ruby ${env.ruby_version}`;
+  return `${osName} · ${arch} · ${runtimeName(env.runtime)} ${env.ruby_version}`;
 }
 
 // Short runner label for table headers: "macos-26-intel-ruby-3.4" → "macOS 26 Intel"
