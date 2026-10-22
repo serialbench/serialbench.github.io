@@ -34,9 +34,9 @@ export interface Payload {
   libraries?: LibraryInfo[];
 }
 
-export const RUNTIMES = ['ruby', 'python', 'c'] as const;
+export const RUNTIMES = ['ruby', 'python', 'c', 'rust'] as const;
 
-const RUNTIME_LABELS: Record<string, string> = { ruby: 'Ruby', python: 'Python', c: 'C' };
+const RUNTIME_LABELS: Record<string, string> = { ruby: 'Ruby', python: 'Python', c: 'C', rust: 'Rust' };
 
 export function runtimeName(runtime?: string): string {
   return RUNTIME_LABELS[runtime ?? 'ruby'] ?? runtime ?? 'runtime';
@@ -119,7 +119,7 @@ const OS_ORDER: Record<string, number> = {
 };
 
 function osRank(key: string): number {
-  const runner = key.replace(/-(ruby|python|c)-.*$/, '');
+  const runner = key.replace(/-(ruby|python|c|rust)-.*$/, '');
   return OS_ORDER[runner] ?? 0;
 }
 
@@ -134,7 +134,7 @@ export function environmentList(payload: Payload, runtime?: string): { key: stri
 // or "macos-arm64-ruby-3.4" (os-arch) for docker/local/legacy results.
 export function environmentLabel(key: string, env: Environment): string {
   const arch = env.arch === 'x86_64' ? 'x64' : env.arch;
-  const runner = key.replace(/-(ruby|python|c)-[^-]*(-[^-]*)?$/, '');
+  const runner = key.replace(/-(ruby|python|c|rust)-[^-]*(-[^-]*)?$/, '');
   const m = runner.match(/^(ubuntu|macos|windows)-(\d+(?:\.\d+)?)(?:-(arm|intel|large))?$/);
   if (m) {
     const osName = m[1].replace('ubuntu', 'Ubuntu').replace('windows', 'Windows').replace('macos', 'macOS');
@@ -147,7 +147,7 @@ export function environmentLabel(key: string, env: Environment): string {
 
 // Short runner label for table headers: "macos-26-intel-ruby-3.4" → "macOS 26 Intel"
 export function runnerShortLabel(key: string, env: Environment): string {
-  const runner = key.replace(/-(ruby|python|c)-[^-]*(-[^-]*)?$/, '');
+  const runner = key.replace(/-(ruby|python|c|rust)-[^-]*(-[^-]*)?$/, '');
   const m = runner.match(/^(ubuntu|macos|windows)-(\d+(?:\.\d+)?)(?:-(arm|intel|large))?$/);
   if (m) {
     const osName = m[1].replace('ubuntu', 'Ubuntu').replace('windows', 'Windows').replace('macos', 'macOS');
