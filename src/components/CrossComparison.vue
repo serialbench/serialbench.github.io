@@ -39,7 +39,7 @@ interface MatrixRow {
 const envEntries = computed(() => Object.entries(props.payload.environments));
 
 function envGroup(key: string, env: Environment, ax: GroupAxis): string {
-  const runner = key.replace(/-(ruby|python|c)-.*$/, '');
+  const runner = key.replace(/-(ruby|python|c|rust)-.*$/, '');
   switch (ax) {
     case 'arch':
       return env.arch === 'arm64' ? 'ARM64' : env.arch === 'x86_64' ? 'x86_64' : env.arch;
@@ -51,7 +51,7 @@ function envGroup(key: string, env: Environment, ax: GroupAxis): string {
 }
 
 function envShortLabel(key: string, env: Environment): string {
-  const runner = key.replace(/-(ruby|python|c)-.*$/, '');
+  const runner = key.replace(/-(ruby|python|c|rust)-.*$/, '');
   const parts = runner.split('-');
   const os = parts[0] === 'macos' ? 'macOS' : parts[0] === 'ubuntu' ? 'Ubuntu' : 'Windows';
   const version = parts[1] ?? '';
