@@ -12,6 +12,7 @@ describe('runtime labels', () => {
     expect(runtimeName('python')).toBe('Python');
     expect(runtimeName('c')).toBe('C');
     expect(runtimeName('rust')).toBe('Rust');
+    expect(runtimeName('js')).toBe('JavaScript');
   });
 
   it('defaults to Ruby when the environment predates the runtime field', () => {
@@ -24,6 +25,7 @@ describe('runtime labels', () => {
     expect(environmentLabel('ubuntu-24.04-python-3.13', env('python', '3.13'))).toBe('Ubuntu 24.04 · arm64 · Python 3.13');
     expect(environmentLabel('macos-26-intel-c-gcc', { ...env('c', 'gcc'), arch: 'x86_64' })).toBe('macOS 26 Intel · x64 · C gcc');
     expect(environmentLabel('ubuntu-24.04-rust-1.98.0', env('rust', '1.98.0'))).toBe('Ubuntu 24.04 · arm64 · Rust 1.98.0');
+    expect(environmentLabel('macos-26-js-24.14.0', env('js', '24.14.0'))).toBe('macOS 26 · arm64 · JavaScript 24.14.0');
   });
 
   it('labels non-runner keys per runtime', () => {
