@@ -1,6 +1,6 @@
 # serialbench site
 
-The benchmark console at https://serialbench.github.io/.
+The benchmark console at https://www.serialbench.org/ (serialbench.github.io redirects there).
 
 Astro 7 (Vite 8) with Vue islands and Tailwind 4. Charts are Chart.js 4,
 bundled — no CDN. Renders the ruby, python, and c runtime legs of the
