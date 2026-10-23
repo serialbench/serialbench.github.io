@@ -65,7 +65,7 @@ jobs:
           # Org page serves at root; allow Pages CDN propagation lag
           for i in 1 2 3 4 5 6; do
             sleep 15
-            INDEX=$(curl -sf "https://serialbench.github.io/" || true)
+            INDEX=$(curl -sfL "https://serialbench.github.io/" || true)
             if echo "$INDEX" | grep -q "Serialbench"; then
               echo "Smoke test passed (attempt $i)"
               exit 0
