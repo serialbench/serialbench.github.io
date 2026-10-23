@@ -6,7 +6,7 @@ export function parseResultsYaml(
   yaml: Record<string, any>,
   filename: string,
 ): ParsedRun | null {
-  const match = filename.match(/^([a-z0-9.-]+)-(ruby|python|c|rust)-([\w.+-]+)\.(\w+)\.yaml$/);
+  const match = filename.match(/^([a-z0-9.-]+)-(ruby|python|c|rust|js)-([\w.+-]+)\.(\w+)\.yaml$/);
   if (!match) return null;
 
   const [, platform, runtime, ruby, format] = match;
