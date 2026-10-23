@@ -37,6 +37,27 @@ export const CHANNELS: Record<string, string> = {
   cbor: '#e09b6a',
   cbor2: '#e0b06a',
   'leptris-whatwg': '#3aa8c1',
+  // native-ecosystem competitors (2026-10 wave)
+  msgspec: '#e06aa8',
+  ujson: '#d4a0e8',
+  'ruamel-yaml': '#a0b8e8',
+  rtoml: '#e8c06a',
+  'tomli-w': '#b8e86a',
+  selectolax: '#6ae8b8',
+  'serde-json': '#e86a6a',
+  'simd-json': '#e8a06a',
+  'quick-xml': '#6a8ae8',
+  roxmltree: '#8a6ae8',
+  'yaml-rust2': '#6ac9e8',
+  toml: '#e86a8a',
+  yyjson: '#6ae86a',
+  cjson: '#e8d46a',
+  expat: '#b0e86a',
+  'native-json': '#f0f0f0',
+  'fast-xml-parser': '#e86ab0',
+  htmlparser2: '#6ab0e8',
+  yaml22: '#e8c96a',
+  'smol-toml': '#9a6ae8',
 };
 
 export function channelColor(serializer: string): string {
