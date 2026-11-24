@@ -37,6 +37,12 @@ export const CHANNELS: Record<string, string> = {
   cbor: '#e09b6a',
   cbor2: '#e0b06a',
   'leptris-whatwg': '#3aa8c1',
+  // validation faces (2026-11 wave)
+  'leptris-xsd': '#5fb8d4',
+  'leptris-schematron': '#7ba8d4',
+  'libxml2-xsd': '#d45b6a',
+  'yeptris-schema': '#4ec9d0',
+  'teptris-schema': '#ce91b8',
   // native-ecosystem competitors (2026-10 wave)
   msgspec: '#e06aa8',
   ujson: '#d4a0e8',
