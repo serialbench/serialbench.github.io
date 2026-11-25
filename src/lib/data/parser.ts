@@ -40,6 +40,9 @@ export function parseResultsYaml(
     xslt: indexBySerializer(br.xslt, 'iterations_per_second'),
     xslt30: indexBySerializer(br.xslt30, 'iterations_per_second'),
     validation: indexBySerializer(br.validation, 'iterations_per_second'),
+    c14n: indexBySerializer(br.c14n, 'iterations_per_second'),
+    diff: indexBySerializer(br.diff, 'iterations_per_second'),
+    plan: indexBySerializer(br.plan, 'iterations_per_second'),
     streaming: indexBySerializer(br.streaming, 'iterations_per_second'),
     memory: indexBySerializer(br.memory, 'allocated_memory'),
   };
