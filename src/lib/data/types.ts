@@ -41,6 +41,9 @@ export interface ParsedRun {
   xslt: Record<string, Record<string, PerfMetric>>;
   xslt30: Record<string, Record<string, PerfMetric>>;
   validation: Record<string, Record<string, PerfMetric>>;
+  c14n: Record<string, Record<string, PerfMetric>>;
+  diff: Record<string, Record<string, PerfMetric>>;
+  plan: Record<string, Record<string, PerfMetric>>;
   streaming: Record<string, Record<string, PerfMetric>>;
   memory: Record<string, Record<string, MemoryMetric>>;
 }
