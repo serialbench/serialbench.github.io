@@ -43,6 +43,12 @@ export const CHANNELS: Record<string, string> = {
   'libxml2-xsd': '#d45b6a',
   'yeptris-schema': '#4ec9d0',
   'teptris-schema': '#ce91b8',
+  // query/tooling faces (diff-c14n-plan wave)
+  'leptris-c14n': '#8fd4e8',
+  'libxml2-c14n': '#c45b8a',
+  'leptris-diff': '#5fd4a8',
+  'yeptris-plan': '#56d4cd',
+  'teptris-plan': '#ce9178',
   // native-ecosystem competitors (2026-10 wave)
   msgspec: '#e06aa8',
   ujson: '#d4a0e8',
