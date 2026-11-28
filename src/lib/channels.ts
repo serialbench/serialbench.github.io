@@ -3,6 +3,7 @@
 // instrument. Single source of truth — components import from here.
 export const CHANNELS: Record<string, string> = {
   leptris: '#5fd4e8',
+  moxml: '#b8a8e8',
   nokogiri: '#f5a623',
   ox: '#e85d9e',
   oga: '#9b8cff',
