@@ -49,6 +49,7 @@ export const CHANNELS: Record<string, string> = {
   'libxml2-c14n': '#c45b8a',
   'leptris-diff': '#5fd4a8',
   'yeptris-plan': '#56d4cd',
+  'yeptris-json-plan': '#56c4d0',
   'leptris-plan': '#5fd4e8',
   'yeptris-tape': '#4ee0c0',
   'teptris-plan': '#ce9178',
